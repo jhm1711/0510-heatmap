@@ -73,7 +73,7 @@ d3.csv("data/temperature-anomaly-data.csv").then((raw_data) => {
 
   svg
     .append("g")
-    .attr("transform", `translate(0, ${newHeight - margin.bottom + 40})`)
+    .attr("transform", `translate(0, ${newHeight - margin.bottom + 50})`)
     .attr("class", "x-axis")
     .call(xAxis);
 
@@ -84,7 +84,7 @@ d3.csv("data/temperature-anomaly-data.csv").then((raw_data) => {
     .append("rect")
     .attr("class", "northern-rect")
     .attr("x", (d) => xScale(d.year))
-    .attr("y", margin.top - 30)
+    .attr("y", margin.top - 20)
     .attr("width", xScale.bandwidth())
     .attr("height", newHeight - margin.bottom + 50)
     .attr("fill", (d) => colorScale(d.avg));
@@ -104,7 +104,7 @@ d3.csv("data/temperature-anomaly-data.csv").then((raw_data) => {
         margin.right -
         xLegendScale.bandwidth() * (northernLegendData.length - i)
     )
-    .attr("y", newHeight - margin.bottom + 65)
+    .attr("y", newHeight - margin.bottom + 85)
     .attr("width", xLegendScale.bandwidth())
     .attr("height", 20)
     .attr("fill", (d) => colorScale(d));
@@ -123,7 +123,7 @@ d3.csv("data/temperature-anomaly-data.csv").then((raw_data) => {
         xLegendScale.bandwidth() * (northernLegendData.length - i) +
         (xLegendScale.bandwidth() - 5)
     )
-    .attr("y", newHeight - margin.bottom + 80)
+    .attr("y", newHeight - margin.bottom + 100)
     .text((d) => d3.format("0.1f")(d))
     .attr("class", "legend-labels")
     .style("fill", (d) => (d >= 0.5 ? "#fff" : "#111"));
@@ -153,7 +153,7 @@ d3.csv("data/temperature-anomaly-data.csv").then((raw_data) => {
 
   svg
     .append("g")
-    .attr("transform", `translate(0, ${newHeight - margin.bottom + 245})`)
+    .attr("transform", `translate(0, ${newHeight - margin.bottom + 285})`)
     .attr("class", "x-axis")
     .call(xAxis);
 
@@ -164,9 +164,9 @@ d3.csv("data/temperature-anomaly-data.csv").then((raw_data) => {
     .append("rect")
     .attr("class", "southern-rect")
     .attr("x", (d) => xScale(d.year))
-    .attr("y", margin.top + 185)
+    .attr("y", margin.top + 215)
     .attr("width", xScale.bandwidth())
-    .attr("height", newHeight - margin.bottom + 40)
+    .attr("height", newHeight - margin.bottom + 50)
     .attr("fill", (d) => colorScale2(d.avg));
 
   xLegendScale.domain(southernLegendData.map((d, i) => i));
@@ -184,7 +184,7 @@ d3.csv("data/temperature-anomaly-data.csv").then((raw_data) => {
         margin.right -
         xLegendScale.bandwidth() * (southernLegendData.length - i)
     )
-    .attr("y", newHeight - margin.bottom + 270)
+    .attr("y", newHeight - margin.bottom + 320)
     .attr("width", xLegendScale.bandwidth())
     .attr("height", 20)
     .attr("fill", (d) => colorScale2(d));
@@ -203,7 +203,7 @@ d3.csv("data/temperature-anomaly-data.csv").then((raw_data) => {
         xLegendScale.bandwidth() * (southernLegendData.length - i) +
         xLegendScale.bandwidth() / 2
     )
-    .attr("y", newHeight - margin.bottom + 285)
+    .attr("y", newHeight - margin.bottom + 335)
     .text((d) => d3.format("0.1f")(d))
     .attr("class", "legend-labels")
     .style("fill", (d) => (d <= -0.3 ? "#fff" : "#111"));
@@ -295,24 +295,30 @@ d3.csv("data/temperature-anomaly-data.csv").then((raw_data) => {
         avg: +d["Global average temperature anomaly relative to 1961-1990"],
       }));
 
+    console.log("Northern Data:", northernData);
+    console.log("Southern Data:", southernData);
+
     northernRects
       .data(northernData)
       .on("mouseover", function (d) {
+        const year = d.year;
+        const avgTemperature = d.avg;
+
         d3.select(this)
           .transition()
           .duration(200)
           .attr("width", xScale.bandwidth() * 1.2)
           .style("opacity", 0.3);
 
-        const centerX = xScale(d.year) + xScale.bandwidth() / 2;
+        // const centerX = xScale(d.year) + xScale.bandwidth() / 2;
         const centerY = margin.top - 30 + (newHeight - margin.bottom + 50) / 2;
 
         svg
           .append("text")
           .attr("id", "tooltip")
-          .attr("x", centerX)
-          .attr("y", centerY)
-          .text("Year: " + d.year + ", Avg: " + formatValue(d.avg))
+          .attr("x", 50)
+          .attr("y", 180)
+          .text(d.year + formatValue(d.avg))
           .style("text-anchor", "middle")
           .style("fill", "black")
           .style("font-size", "12px");
@@ -331,20 +337,23 @@ d3.csv("data/temperature-anomaly-data.csv").then((raw_data) => {
     southernRects
       .data(southernData)
       .on("mouseover", function (d) {
+        const year = d.year;
+        const avgTemperature = d.avg;
+
         d3.select(this)
           .transition()
           .duration(200)
           .attr("width", xScale.bandwidth() * 1.2)
           .style("opacity", 0.3);
 
-        const centerX = xScale(d.year) + xScale.bandwidth() / 2;
-        const centerY = margin.top + 185 + (newHeight - margin.bottom + 40) / 2;
+        // const centerX = xScale(d.year) + xScale.bandwidth() / 2;
+        const centerY = margin.top + 140 + (newHeight - margin.bottom + 40) / 2;
         svg
           .append("text")
           .attr("id", "tooltip")
-          .attr("x", centerX)
+          .attr("x", 50)
           .attr("y", centerY)
-          .text("Year: " + d.year + ", Avg: " + formatValue(d.avg))
+          .text(d.year + formatValue(d.avg))
           .style("text-anchor", "middle")
           .style("fill", "black")
           .style("font-size", "12px");
